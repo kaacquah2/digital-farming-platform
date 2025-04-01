@@ -1,0 +1,17 @@
+{
+    "0": "healthy",
+    "1": "early_blight",
+    "2": "late_blight",
+    "3": "leaf_mold",
+    "4": "septoria_leaf_spot",
+    "5": "spider_mites",
+    "6": "target_spot",
+    "7": "yellow_leaf_curl_virus",
+    "8": "mosaic_virus",
+    "9": "powdery_mildew",
+    "10": "downy_mildew",
+    "11": "bacterial_spot",
+    "12": "bacterial_wilt",
+    "13": "fusarium_wilt",
+    "14": "root_rot"
+} 
