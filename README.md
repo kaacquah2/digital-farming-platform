@@ -41,7 +41,7 @@ A comprehensive web application for modern farming management, featuring real-ti
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/digital-farming-platform.git
+git clone https://github.com/kaacquah2/digital-farming-platform.git
 cd digital-farming-platform
 ```
 
@@ -98,4 +98,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Material-UI for the component library
 - Firebase for authentication and backend services
-- OpenAI for AI capabilities 
+- OpenAI for AI capabilities
