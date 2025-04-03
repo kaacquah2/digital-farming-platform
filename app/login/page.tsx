@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, FormEvent } from "react"
+import { useState, FormEvent, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,7 +21,23 @@ export default function LoginPage() {
   const [resetSent, setResetSent] = useState(false)
 
   const router = useRouter()
-  const { signIn, resetPassword } = useAuth()
+  const { signIn, resetPassword, user } = useAuth()
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard")
+    }
+  }, [user, router])
+
+  // Load saved email if Remember Me was checked
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail")
+    if (savedEmail) {
+      setEmail(savedEmail)
+      setRememberMe(true)
+    }
+  }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,6 +46,15 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password)
+      
+      // Handle Remember Me
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email)
+      } else {
+        localStorage.removeItem("rememberedEmail")
+      }
+
+      // Redirect to dashboard
       router.push("/dashboard")
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during sign in. Please try again."

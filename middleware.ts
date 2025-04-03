@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', baseUrl))
   }
 
-  // Redirect unauthenticated users to login
+  // Redirect unauthenticated users to login for protected routes
   if (!isAuthenticated && !isPublicPath && pathname !== '/') {
     const loginUrl = new URL('/login', baseUrl)
     // Add the current path as a redirect parameter
@@ -30,13 +30,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Handle root path redirect
-  if (pathname === '/') {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/dashboard', baseUrl))
-    } else {
-      return NextResponse.redirect(new URL('/landing', baseUrl))
-    }
+  // Handle root path for authenticated users
+  if (pathname === '/' && isAuthenticated) {
+    return NextResponse.redirect(new URL('/dashboard', baseUrl))
   }
 
   return NextResponse.next()

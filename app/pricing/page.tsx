@@ -1,9 +1,57 @@
+"use client"
+
+import { useState } from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Check } from "lucide-react"
+import { loadStripe } from "@stripe/stripe-js"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAuth } from "@/context/auth-context"
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+
+const plans = [
+  {
+    name: "Basic",
+    price: 0,
+    description: "Perfect for small farms getting started",
+    features: [
+      "Up to 5 fields",
+      "Basic crop tracking",
+      "Weather forecasts",
+      "Email support",
+    ],
+  },
+  {
+    name: "Pro",
+    price: 29,
+    description: "For medium-sized farms seeking optimization",
+    features: [
+      "Up to 15 fields",
+      "Advanced crop tracking",
+      "Disease detection",
+      "Weather integration",
+      "Analytics dashboard",
+      "Priority support",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: 99,
+    description: "For large farms requiring full automation",
+    features: [
+      "Unlimited fields",
+      "All Pro features",
+      "Custom integrations",
+      "Field mapping",
+      "API access",
+      "Dedicated support",
+    ],
+  },
+]
 
 export const metadata: Metadata = {
   title: "Pricing | TerraBit",
@@ -11,156 +59,79 @@ export const metadata: Metadata = {
 }
 
 export default function PricingPage() {
+  const { user } = useAuth()
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubscribe = async (plan: string) => {
+    setIsLoading(true)
+    try {
+      if (!user) {
+        window.location.href = `/signup?redirect=/pricing&plan=${plan}`
+        return
+      }
+      window.location.href = `/payment?plan=${plan}`
+    } catch (error) {
+      console.error("Error subscribing:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <div className="container mx-auto px-4 py-24">
-      <div className="mx-auto max-w-5xl text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Pricing Plans</h1>
-        <p className="mt-6 text-xl text-muted-foreground">
-          Choose the right plan for your farming needs. All plans include access to our core features.
-        </p>
-      </div>
+    <div className="container py-10">
+      <div className="space-y-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold tracking-tight">Pricing</h1>
+          <p className="text-muted-foreground">
+            Choose the right plan for your farming needs
+          </p>
+        </div>
 
-      <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-        {/* Basic Plan */}
-        <Card className="flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-2xl">Basic</CardTitle>
-            <CardDescription>For small farms just getting started</CardDescription>
-            <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-              $0<span className="ml-1 text-2xl font-medium text-muted-foreground">/month</span>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Up to 3 fields</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Basic soil analysis</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Weather forecasts</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Community support</span>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link href="/signup">Get Started</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        {/* Pro Plan */}
-        <Card className="flex flex-col border-green-500 shadow-lg">
-          <CardHeader className="bg-green-50 dark:bg-green-900/20">
-            <div className="text-center text-sm font-medium uppercase text-green-600 dark:text-green-400">
-              Most Popular
-            </div>
-            <CardTitle className="text-2xl">Pro</CardTitle>
-            <CardDescription>For medium-sized farms seeking optimization</CardDescription>
-            <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-              $29<span className="ml-1 text-2xl font-medium text-muted-foreground">/month</span>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Up to 15 fields</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Advanced soil analysis</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Pest detection</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Yield predictions</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Email support</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Data export</span>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full bg-green-600 hover:bg-green-700">
-              <Link href="/signup?plan=pro">Try Pro</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        {/* Enterprise Plan */}
-        <Card className="flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-2xl">Enterprise</CardTitle>
-            <CardDescription>For large agricultural operations</CardDescription>
-            <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-              $99<span className="ml-1 text-2xl font-medium text-muted-foreground">/month</span>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Unlimited fields</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Comprehensive soil analysis</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Advanced pest management</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>AI-powered recommendations</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Priority support</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>API access</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="mr-2 h-5 w-5 text-green-500" />
-                <span>Custom integrations</span>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link href="/contact?subject=Enterprise">Contact Sales</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-
-      <div className="mx-auto mt-16 max-w-3xl text-center">
-        <h2 className="text-2xl font-bold">Need a custom solution?</h2>
-        <p className="mt-4 text-lg text-muted-foreground">
-          We offer tailored solutions for agricultural cooperatives, government agencies, and research institutions.
-        </p>
-        <Button asChild className="mt-6">
-          <Link href="/contact">Contact Us</Link>
-        </Button>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {plans.map((plan) => (
+            <Card
+              key={plan.name}
+              className={`relative ${
+                selectedPlan === plan.name.toLowerCase() ? "border-primary" : ""
+              }`}
+            >
+              <CardHeader>
+                <CardTitle>{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+                <div className="mt-4 flex items-baseline text-5xl font-extrabold">
+                  ${plan.price}
+                  <span className="ml-1 text-2xl font-medium text-muted-foreground">
+                    /month
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start">
+                      <Check className="mr-2 h-5 w-5 text-green-500" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  onClick={() => handleSubscribe(plan.name.toLowerCase())}
+                  disabled={isLoading || (user?.plan === plan.name.toLowerCase())}
+                >
+                  {user?.plan === plan.name.toLowerCase()
+                    ? "Current Plan"
+                    : plan.price === 0
+                    ? "Get Started"
+                    : "Subscribe"}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )

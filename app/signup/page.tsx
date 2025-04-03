@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, FormEvent, ChangeEvent } from "react"
+import { useState, FormEvent, ChangeEvent, useEffect } from "react"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { CropIcon, AlertCircle } from "lucide-react"
 import { createUser } from "@/firebase/auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useAuth } from "@/context/auth-context"
 
 interface FormData {
   firstName: string
@@ -24,6 +25,14 @@ export default function SignupPage() {
   const searchParams = useSearchParams()
   const plan = searchParams.get("plan") || "basic"
   const router = useRouter()
+  const { user } = useAuth()
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard")
+    }
+  }, [user, router])
 
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -65,6 +74,8 @@ export default function SignupPage() {
     try {
       const displayName = `${formData.firstName} ${formData.lastName}`
       await createUser(formData.email, formData.password, displayName)
+      
+      // Redirect to dashboard
       router.push("/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred during sign up. Please try again.")
