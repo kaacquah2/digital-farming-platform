@@ -78,6 +78,31 @@ export default function PricingPage() {
     }
   }
 
+  const handleManageSubscription = async () => {
+    setIsLoading(true)
+    try {
+      // Get the ID token
+      const idToken = await user?.getIdToken()
+      
+      const response = await fetch("/api/stripe/create-portal-session", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error("Failed to create portal session")
+      }
+      const { url } = await response.json()
+      window.location.href = url
+    } catch (error) {
+      console.error("Error managing subscription:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="container py-10">
       <div className="space-y-6">
@@ -86,6 +111,13 @@ export default function PricingPage() {
           <p className="text-muted-foreground">
             Choose the right plan for your farming needs
           </p>
+          {user?.subscriptionStatus === 'active' && (
+            <div className="mt-4">
+              <Button onClick={handleManageSubscription} disabled={isLoading}>
+                Manage Current Subscription
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -17,6 +17,11 @@ export function middleware(request: NextRequest) {
   // Get the base URL from the request
   const baseUrl = request.nextUrl.origin
 
+  // Redirect /subscription to /pricing
+  if (pathname === '/subscription') {
+    return NextResponse.redirect(new URL('/pricing', baseUrl))
+  }
+
   // Redirect authenticated users away from public paths
   if (isAuthenticated && isPublicPath) {
     return NextResponse.redirect(new URL('/dashboard', baseUrl))

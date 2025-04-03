@@ -1,101 +1,92 @@
 # Digital Farming Platform
 
-A comprehensive web application for modern farming management, featuring real-time analytics, marketplace integration, and AI-powered assistance.
+A modern farming platform with AI-powered insights, data analytics, and smart crop management.
 
 ## Features
 
-- 🌱 Crop Management
-- 📊 Analytics Dashboard
-- 🛍️ Marketplace Integration
-- 🤖 AI-Powered Disease Detection
-- 💬 Live Chat Support
-- 🔔 Real-time Notifications
-- 👤 User Authentication
-- 📱 Responsive Design
+- Smart Crop Management
+- Data Analytics
+- Disease Prevention
+- Weather Forecasting
+- Subscription Plans with Stripe Integration
 
-## Tech Stack
-
-- Frontend:
-  - React
-  - TypeScript
-  - Material-UI
-  - Firebase Authentication
-  - OpenAI Integration
-
-- Backend:
-  - Python
-  - Flask
-  - Firebase Admin SDK
-  - OpenAI API
-
-## Getting Started
+## Deployment to Vercel
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- Python (v3.8 or higher)
-- Firebase account
-- OpenAI API key
+- [Vercel Account](https://vercel.com/signup)
+- [GitHub Account](https://github.com/signup)
+- [Stripe Account](https://dashboard.stripe.com/register)
+- [Firebase Project](https://console.firebase.google.com/)
 
-### Installation
+### Deployment Steps
 
-1. Clone the repository:
+1. **Push your code to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin <your-github-repo-url>
+   git push -u origin main
+   ```
+
+2. **Import your project to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Select the repository and click "Import"
+
+3. **Configure Environment Variables**
+   - In the Vercel project settings, go to "Environment Variables"
+   - Add all the environment variables from your `.env.local` file:
+     ```
+     NEXT_PUBLIC_FIREBASE_API_KEY
+     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+     NEXT_PUBLIC_FIREBASE_PROJECT_ID
+     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+     NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+     NEXT_PUBLIC_FIREBASE_APP_ID
+     NEXT_PUBLIC_FIREBASE_DATABASE_URL
+     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+     STRIPE_SECRET_KEY
+     STRIPE_WEBHOOK_SECRET
+     NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID
+     NEXT_PUBLIC_STRIPE_PRO_PRICE_ID
+     NEXT_PUBLIC_APP_URL
+     ```
+
+4. **Configure Stripe Webhook**
+   - In your Stripe Dashboard, go to Developers > Webhooks
+   - Add a new endpoint: `https://your-vercel-domain.com/api/stripe/webhook`
+   - Select events to listen for: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+   - Copy the Webhook Signing Secret and add it to your Vercel environment variables as `STRIPE_WEBHOOK_SECRET`
+
+5. **Deploy**
+   - Vercel will automatically deploy your application
+   - Once deployed, you'll get a URL to access your application
+
+## Local Development
+
 ```bash
-git clone https://github.com/kaacquah2/digital-farming-platform.git
-cd digital-farming-platform
-```
-
-2. Install frontend dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Install backend dependencies:
-```bash
-pip install -r requirements.txt
-```
+# Run development server
+npm run dev
 
-4. Set up environment variables:
-   - Create a `.env` file in the root directory
-   - Add your Firebase and OpenAI credentials
+# Build for production
+npm run build
 
-5. Start the development server:
-```bash
-# Start frontend
+# Start production server
 npm start
-
-# Start backend (in a separate terminal)
-python app.py
 ```
 
-## Environment Variables
+## Technologies Used
 
-Create a `.env` file with the following variables:
-
-```
-REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
-REACT_APP_FIREBASE_APP_ID=your_firebase_app_id
-OPENAI_API_KEY=your_openai_api_key
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Material-UI for the component library
-- Firebase for authentication and backend services
-- OpenAI for AI capabilities
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Firebase
+- Stripe
+- Vercel
